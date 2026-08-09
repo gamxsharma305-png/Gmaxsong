@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gmax Playlist Hub - Dynamic Key Access</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #060913;
+            color: #ffffff;
+        }
+
+        /* Header */
+        header {
+            height: 60px;
+            width: 100%;
+            background: rgba(6, 9, 19, 0.95);
+            backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            position: relative;
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid #00d4ff;
+            box-shadow: 0 0 12px rgba(0, 212, 255, 0.5);
+        }
+
+        .logo-text {
+            font-size: 1.3rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #00d4ff, #ff0055);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .header-badge {
+            background: rgba(0, 212, 255, 0.15);
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            color: #00d4ff;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Content Container */
+        .content-container {
+            width: 100%;
+            height: calc(100vh - 120px);
+            position: relative;
+        }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        #homeTab iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* KEY LOCK OVERLAY */
+        .auth-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #060913;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: #0d111d;
+            border-radius: 20px;
+            padding: 30px 25px;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.2);
+        }
+
+        .auth-card i.lock-icon {
+            font-size: 2.8rem;
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+
+        .auth-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .auth-card p {
+            font-size: 0.88rem;
+            color: #a0aec0;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .auth-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .auth-input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 1rem;
+            text-align: center;
+            outline: none;
+        }
+
+        .auth-input-group input:focus {
+            border-color: #00d4ff;
+        }
+
+        .auth-btn {
+            padding: 12px;
+            background: linear-gradient(135deg, #00d4ff, #0088cc);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .auth-btn:hover {
+            opacity: 0.9;
+        }
+
+        .get-key-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #0088cc 0%, #00a2f3 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+            transition: 0.3s;
+        }
+
+        .get-key-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.5);
+        }
+
+        .error-msg {
+            color: #ff4757;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        /* TELEGRAM MODAL POPUP */
+        .tg-popup-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .tg-popup-card {
+            background: #0d111d;
+            border-radius: 20px;
+            padding: 30px 25px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid #0088cc;
+            box-shadow: 0 0 30px rgba(0, 136, 204, 0.4);
+            position: relative;
+            animation: popupScale 0.3s ease-out;
+        }
+
+        @keyframes popupScale {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .tg-popup-close {
+            position: absolute;
+            top: 12px; right: 15px;
+            font-size: 1.5rem;
+            color: #a0aec0;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .tg-popup-close:hover {
+            color: #ff4757;
+        }
+
+        .tg-icon-large {
+            font-size: 3.5rem;
+            color: #0088cc;
+            margin-bottom: 15px;
+        }
+
+        .tg-popup-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .tg-popup-card p {
+            font-size: 0.9rem;
+            color: #a0aec0;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .tg-join-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #0088cc 0%, #00a2f3 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            box-shadow: 0 5px 20px rgba(0, 136, 204, 0.4);
+        }
+
+        /* ABOUT TAB STYLES */
+        #aboutTab {
+            overflow-y: auto;
+            padding: 25px 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .about-card {
+            background: #0d111d;
+            border-radius: 20px;
+            padding: 25px 20px;
+            max-width: 480px;
+            width: 100%;
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .about-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #00d4ff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+            margin: 0 auto 15px auto;
+        }
+
+        .about-card h2 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .about-tagline {
+            color: #00d4ff;
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .about-bio {
+            color: #ffffff;
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(255, 0, 85, 0.12));
+            padding: 20px 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(0, 212, 255, 0.4);
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.4);
+            letter-spacing: 0.3px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .feature-item {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            padding: 12px 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .feature-item i {
+            font-size: 1.2rem;
+            color: #00d4ff;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .feature-item span {
+            font-size: 0.78rem;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .telegram-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #0088cc 0%, #00a2f3 100%);
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+            transition: 0.3s;
+        }
+
+        .telegram-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.5);
+        }
+
+        /* Bottom Nav */
+        .bottom-nav {
+            height: 60px;
+            width: 100%;
+            background: rgba(6, 9, 19, 0.98);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: fixed;
+            bottom: 0; left: 0;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #718096;
+            cursor: pointer;
+            font-size: 0.75rem;
+            width: 50%;
+        }
+
+        .nav-item.active { color: #00d4ff; }
+    </style>
+</head>
+<body>
+
+    <!-- TELEGRAM ALWAYS-SHOW POPUP MODAL -->
+    <div class="tg-popup-overlay" id="tgPopupModal">
+        <div class="tg-popup-card">
+            <span class="tg-popup-close" onclick="closeTgPopup()">&times;</span>
+            <i class="fa-brands fa-telegram tg-icon-large"></i>
+            <h3>Join Telegram Channel</h3>
+            <p>ताज़ा **Access Keys**, नए गानों की प्लेलिस्ट और अपडेट्स के लिए हमारे टेलीग्राम चैनल से जुड़ें!</p>
+            <a href="https://t.me/+BQmDTgTQkJU3ODA1" target="_blank" class="tg-join-btn" onclick="closeTgPopup()">
+                <i class="fa-brands fa-telegram"></i> Join Telegram Now
+            </a>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <img src="https://i.postimg.cc/YCtvjdWV/me.jpg" alt="Gmax Logo" class="logo-img">
+            <span class="logo-text">Gmax Playlist Hub</span>
+        </div>
+        <div class="header-badge">
+            <i class="fa-solid fa-clock"></i> 36 Hours Pass
+        </div>
+    </header>
+
+    <!-- Content Container -->
+    <div class="content-container">
+        
+        <!-- HOME TAB -->
+        <div id="homeTab" class="tab-content active">
+            
+            <!-- KEY LOCK OVERLAY -->
+            <div class="auth-overlay" id="authOverlay">
+                <div class="auth-card">
+                    <i class="fa-solid fa-shield-halved lock-icon"></i>
+                    <h2>36 Hours Access Key</h2>
+                    <p>संगीत सुनने के लिए 36 घंटे की **Access Key** दर्ज करें। Key जनरेट करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
+                    
+                    <div class="auth-input-group">
+                        <input type="text" id="accessKeyInput" placeholder="Enter Access Key Here">
+                        <button class="auth-btn" onclick="verifyKey()">Unlock Player</button>
+                    </div>
+
+                    <!-- GET KEY BUTTON (Telegram Channel Link) -->
+                    <a href="https://t.me/+BQmDTgTQkJU3ODA1" target="_blank" class="get-key-btn">
+                        <i class="fa-brands fa-telegram"></i> Get Key From Telegram
+                    </a>
+                    
+                    <div class="error-msg" id="errorMsg">❌ अमान्य Key! कृपया सही Key दर्ज करें।</div>
+                </div>
+            </div>
+
+            <!-- IFRAME PLAYER -->
+            <iframe 
+                src="https://saaz-next.vercel.app" 
+                title="Music Player"
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture">
+            </iframe>
+        </div>
+
+        <!-- ABOUT TAB -->
+        <div id="aboutTab" class="tab-content">
+            <div class="about-card">
+                <img src="https://i.postimg.cc/YCtvjdWV/me.jpg" alt="Gmax Profile" class="about-avatar">
+                <h2>Gmax Playlist Hub</h2>
+                <div class="about-tagline">Digital Creator & Developer</div>
+                
+                <div class="about-bio">
+                    👑 *"न किसी से होड़ है, न किसी का डर... हम अपने ही बनाए साम्राज्य के इकलौते बादशाह हैं — Gmax।"*
+                </div>
+
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <i class="fa-solid fa-key"></i>
+                        <span>36-Hour Keys</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-music"></i>
+                        <span>HQ Music Stream</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Fast & Lite UI</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-brands fa-telegram"></i>
+                        <span>Daily Updates</span>
+                    </div>
+                </div>
+
+                <a href="https://t.me/+BQmDTgTQkJU3ODA1" target="_blank" class="telegram-btn">
+                    <i class="fa-brands fa-telegram"></i> Join Telegram Channel
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('homeTab', this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('aboutTab', this)">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>About</span>
+        </div>
+    </nav>
+
+    <script>
+        // 🔒 Secret Prefix
+        const SECRET_PREFIX = "GTRMF";
+
+        // 🕒 36 घंटे मिलीसेकंड में
+        const EXPIRE_TIME = 36 * 60 * 60 * 1000;
+
+        // ✖️ Telegram Popup Close Function
+        function closeTgPopup() {
+            document.getElementById('tgPopupModal').style.display = 'none';
+        }
+
+        // 📅 आज की Key (Format: GTRMF-YYYYMM + तारीख का अंतिम अंक)
+        function getTodayKey() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0'); 
+            
+            const dayString = String(today.getDate());
+            const lastDigitOfDay = dayString.slice(-1); 
+
+            return `${SECRET_PREFIX}-${year}${month}${lastDigitOfDay}`;
+        }
+
+        // 📅 कल की Key (36 घंटे बैकअप)
+        function getYesterdayKey() {
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            const year = yesterday.getFullYear();
+            const month = String(yesterday.getMonth() + 1).padStart(2, '0');
+            
+            const dayString = String(yesterday.getDate());
+            const lastDigitOfDay = dayString.slice(-1);
+
+            return `${SECRET_PREFIX}-${year}${month}${lastDigitOfDay}`;
+        }
+
+        // 🕒 ऑटो-वेरिफिकेशन
+        window.addEventListener('DOMContentLoaded', () => {
+            // हर बार पेज खोलने पर Telegram Popup दिखाएगा
+            document.getElementById('tgPopupModal').style.display = 'flex';
+
+            const savedKey = localStorage.getItem('gmax_key');
+            const savedTime = localStorage.getItem('gmax_key_time');
+            const currentTime = new Date().getTime();
+
+            const todayKey = getTodayKey();
+            const yesterdayKey = getYesterdayKey();
+
+            if (savedKey && savedTime) {
+                const isTimeValid = (currentTime - savedTime) < EXPIRE_TIME;
+                const isKeyValid = (savedKey === todayKey || savedKey === yesterdayKey);
+
+                if (isTimeValid && isKeyValid) {
+                    document.getElementById('authOverlay').style.display = 'none';
+                } else {
+                    localStorage.removeItem('gmax_key');
+                    localStorage.removeItem('gmax_key_time');
+                    document.getElementById('authOverlay').style.display = 'flex';
+                }
+            }
+        });
+
+        // 🔓 Key चेकिंग
+        function verifyKey() {
+            const inputKey = document.getElementById('accessKeyInput').value.trim().toUpperCase();
+            const errorMsg = document.getElementById('errorMsg');
+
+            const todayKey = getTodayKey();
+            const yesterdayKey = getYesterdayKey();
+
+            if (inputKey === todayKey || inputKey === yesterdayKey) {
+                const currentTime = new Date().getTime();
+                
+                localStorage.setItem('gmax_key', inputKey);
+                localStorage.setItem('gmax_key_time', currentTime);
+
+                document.getElementById('authOverlay').style.display = 'none';
+                errorMsg.style.display = 'none';
+            } else {
+                errorMsg.style.display = 'block';
+            }
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+    </script>
+</body>
+</html>
