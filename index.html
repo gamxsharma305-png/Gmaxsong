@@ -68,6 +68,9 @@
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         /* Content Container */
@@ -81,6 +84,7 @@
             display: none;
             width: 100%;
             height: 100%;
+            position: relative;
         }
 
         .tab-content.active {
@@ -91,6 +95,31 @@
             width: 100%;
             height: 100%;
             border: none;
+        }
+
+        /* CORRECTED SEARCH LOGO OVERLAY POSITION */
+        .search-logo-overlay {
+            position: absolute;
+            top: 10px; /* सर्च बार की सीध में */
+            left: 12px; /* पर्पल आइकन के ऊपर */
+            width: 44px;
+            height: 44px;
+            z-index: 999;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #060913;
+            border-radius: 12px;
+        }
+
+        .search-logo-overlay img {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 1.5px solid #00d4ff;
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
         }
 
         /* KEY LOCK OVERLAY */
@@ -442,8 +471,9 @@
             <img src="https://i.postimg.cc/YCtvjdWV/me.jpg" alt="Gmax Logo" class="logo-img">
             <span class="logo-text">Gmax Playlist Hub</span>
         </div>
+        <!-- Live Countdown Timer Header Badge -->
         <div class="header-badge">
-            <i class="fa-solid fa-clock"></i> 36 Hours Pass
+            <i class="fa-solid fa-clock"></i> <span id="headerTimer">48:00:00</span>
         </div>
     </header>
 
@@ -453,12 +483,17 @@
         <!-- HOME TAB -->
         <div id="homeTab" class="tab-content active">
             
+            <!-- FIXED OVERLAY LOGO FOR SEARCH BAR ICON -->
+            <div class="search-logo-overlay">
+                <img src="https://i.postimg.cc/prCsgYtQ/me-(1).png" alt="Custom Logo">
+            </div>
+
             <!-- KEY LOCK OVERLAY -->
             <div class="auth-overlay" id="authOverlay">
                 <div class="auth-card">
                     <i class="fa-solid fa-shield-halved lock-icon"></i>
-                    <h2>36 Hours Access Key</h2>
-                    <p>संगीत सुनने के लिए 36 घंटे की **Access Key** दर्ज करें। Key जनरेट करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
+                    <h2>48 Hours Access Key</h2>
+                    <p>संगीत सुनने के लिए 48 घंटे की **Access Key** दर्ज करें। Key जनरेट करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
                     
                     <div class="auth-input-group">
                         <input type="text" id="accessKeyInput" placeholder="Enter Access Key Here">
@@ -496,7 +531,7 @@
                 <div class="features-grid">
                     <div class="feature-item">
                         <i class="fa-solid fa-key"></i>
-                        <span>36-Hour Keys</span>
+                        <span>48-Hour Keys</span>
                     </div>
                     <div class="feature-item">
                         <i class="fa-solid fa-music"></i>
@@ -536,8 +571,9 @@
         // 🔒 Secret Prefix
         const SECRET_PREFIX = "GTRMF";
 
-        // 🕒 36 घंटे मिलीसेकंड में
-        const EXPIRE_TIME = 36 * 60 * 60 * 1000;
+        // 🕒 48 घंटे मिलीसेकंड में
+        const EXPIRE_TIME = 48 * 60 * 60 * 1000;
+        let timerInterval = null;
 
         // ✖️ Telegram Popup Close Function
         function closeTgPopup() {
@@ -556,7 +592,7 @@
             return `${SECRET_PREFIX}-${year}${month}${lastDigitOfDay}`;
         }
 
-        // 📅 कल की Key (36 घंटे बैकअप)
+        // 📅 कल की Key (48 घंटे बैकअप)
         function getYesterdayKey() {
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
@@ -567,6 +603,37 @@
             const lastDigitOfDay = dayString.slice(-1);
 
             return `${SECRET_PREFIX}-${year}${month}${lastDigitOfDay}`;
+        }
+
+        // ⏳ 48 घंटे का लाइव काउंटडाउन टाइमर शुरू करने का फ़ंक्शन
+        function startCountdown(savedTime) {
+            if (timerInterval) clearInterval(timerInterval);
+
+            const timerElement = document.getElementById('headerTimer');
+            
+            function updateTimer() {
+                const currentTime = new Date().getTime();
+                const elapsedTime = currentTime - savedTime;
+                const remainingTime = EXPIRE_TIME - elapsedTime;
+
+                if (remainingTime <= 0) {
+                    clearInterval(timerInterval);
+                    timerElement.textContent = "Expired";
+                    localStorage.removeItem('gmax_key');
+                    localStorage.removeItem('gmax_key_time');
+                    document.getElementById('authOverlay').style.display = 'flex';
+                    return;
+                }
+
+                const hours = Math.floor(remainingTime / (1000 * 60 * 60));
+                const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+                timerElement.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
         }
 
         // 🕒 ऑटो-वेरिफिकेशन
@@ -587,6 +654,7 @@
 
                 if (isTimeValid && isKeyValid) {
                     document.getElementById('authOverlay').style.display = 'none';
+                    startCountdown(parseInt(savedTime, 10));
                 } else {
                     localStorage.removeItem('gmax_key');
                     localStorage.removeItem('gmax_key_time');
@@ -611,6 +679,8 @@
 
                 document.getElementById('authOverlay').style.display = 'none';
                 errorMsg.style.display = 'none';
+
+                startCountdown(currentTime);
             } else {
                 errorMsg.style.display = 'block';
             }
