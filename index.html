@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gmax Playlist Hub - Dynamic Key Access</title>
+    <title>Gmax Playlist Hub</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -61,16 +61,24 @@
         }
 
         .header-badge {
-            background: rgba(0, 212, 255, 0.15);
-            border: 1px solid rgba(0, 212, 255, 0.4);
-            color: #00d4ff;
-            padding: 5px 14px;
+            background: rgba(0, 136, 204, 0.2);
+            border: 1px solid rgba(0, 136, 204, 0.5);
+            color: #0088cc;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-size: 0.85rem;
+            font-weight: 700;
             display: flex;
             align-items: center;
             gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .header-badge:hover {
+            background: rgba(0, 136, 204, 0.4);
+            box-shadow: 0 0 10px rgba(0, 136, 204, 0.5);
         }
 
         /* Content Container */
@@ -97,11 +105,11 @@
             border: none;
         }
 
-        /* CORRECTED SEARCH LOGO OVERLAY POSITION */
+        /* SEARCH LOGO OVERLAY */
         .search-logo-overlay {
             position: absolute;
-            top: 10px; /* सर्च बार की सीध में */
-            left: 12px; /* पर्पल आइकन के ऊपर */
+            top: 10px;
+            left: 12px;
             width: 44px;
             height: 44px;
             z-index: 999;
@@ -122,8 +130,8 @@
             box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
         }
 
-        /* KEY LOCK OVERLAY */
-        .auth-overlay {
+        /* DYNAMIC SHARE OVERLAY */
+        .share-overlay {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
@@ -131,106 +139,88 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 50;
+            z-index: 200;
             padding: 20px;
         }
 
-        .auth-card {
+        .share-card {
             background: #0d111d;
             border-radius: 20px;
             padding: 30px 25px;
             max-width: 420px;
             width: 100%;
             text-align: center;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            box-shadow: 0 15px 35px rgba(0, 212, 255, 0.2);
+            border: 1px solid rgba(37, 211, 102, 0.4);
+            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.2);
         }
 
-        .auth-card i.lock-icon {
-            font-size: 2.8rem;
-            color: #00d4ff;
+        .share-icon {
+            font-size: 3rem;
+            color: #25D366;
             margin-bottom: 15px;
         }
 
-        .auth-card h2 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
+        .share-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 8px;
         }
 
-        .auth-card p {
-            font-size: 0.88rem;
+        .share-card p {
+            font-size: 0.9rem;
             color: #a0aec0;
             margin-bottom: 20px;
             line-height: 1.5;
         }
 
-        .auth-input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .auth-input-group input {
+        /* GREEN PROGRESS BAR */
+        .progress-container {
             width: 100%;
-            padding: 12px 15px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            font-size: 1rem;
-            text-align: center;
-            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            height: 18px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            position: relative;
+            border: 1px solid rgba(37, 211, 102, 0.3);
         }
 
-        .auth-input-group input:focus {
-            border-color: #00d4ff;
+        .green-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #25D366, #128C7E);
+            border-radius: 15px;
+            transition: width 0.4s ease-in-out;
+            box-shadow: 0 0 10px rgba(37, 211, 102, 0.6);
         }
 
-        .auth-btn {
-            padding: 12px;
-            background: linear-gradient(135deg, #00d4ff, #0088cc);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.3s;
+        .progress-text {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #25D366;
+            margin-bottom: 20px;
         }
 
-        .auth-btn:hover {
-            opacity: 0.9;
-        }
-
-        .get-key-btn {
+        .whatsapp-share-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
-            padding: 12px;
-            background: linear-gradient(135deg, #0088cc 0%, #00a2f3 100%);
+            padding: 14px;
+            background: #25D366;
             color: #ffffff;
-            text-decoration: none;
-            border-radius: 10px;
-            font-size: 0.95rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
             font-weight: 700;
-            margin-top: 10px;
-            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
             transition: 0.3s;
         }
 
-        .get-key-btn:hover {
+        .whatsapp-share-btn:hover {
+            background: #1ebc57;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.5);
-        }
-
-        .error-msg {
-            color: #ff4757;
-            font-size: 0.85rem;
-            margin-top: 10px;
-            display: none;
         }
 
         /* TELEGRAM MODAL POPUP */
@@ -452,13 +442,13 @@
 </head>
 <body>
 
-    <!-- TELEGRAM ALWAYS-SHOW POPUP MODAL -->
+    <!-- TELEGRAM POPUP MODAL -->
     <div class="tg-popup-overlay" id="tgPopupModal">
         <div class="tg-popup-card">
             <span class="tg-popup-close" onclick="closeTgPopup()">&times;</span>
             <i class="fa-brands fa-telegram tg-icon-large"></i>
             <h3>Join Telegram Channel</h3>
-            <p>ताज़ा **Access Keys**, नए गानों की प्लेलिस्ट और अपडेट्स के लिए हमारे टेलीग्राम चैनल से जुड़ें!</p>
+            <p>नए गानों की प्लेलिस्ट और अपडेट्स के लिए हमारे टेलीग्राम चैनल से जुड़ें!</p>
             <a href="https://t.me/+BQmDTgTQkJU3ODA1" target="_blank" class="tg-join-btn" onclick="closeTgPopup()">
                 <i class="fa-brands fa-telegram"></i> Join Telegram Now
             </a>
@@ -471,10 +461,11 @@
             <img src="https://i.postimg.cc/YCtvjdWV/me.jpg" alt="Gmax Logo" class="logo-img">
             <span class="logo-text">Gmax Playlist Hub</span>
         </div>
-        <!-- Live Countdown Timer Header Badge -->
-        <div class="header-badge">
-            <i class="fa-solid fa-clock"></i> <span id="headerTimer">48:00:00</span>
-        </div>
+        
+        <!-- TELEGRAM ICON & DIRECT LINK IN HEADER -->
+        <a href="https://t.me/+BQmDTgTQkJU3ODA1" target="_blank" class="header-badge">
+            <i class="fa-brands fa-telegram" style="font-size: 1.1rem;"></i> <span>Telegram</span>
+        </a>
     </header>
 
     <!-- Content Container -->
@@ -482,30 +473,27 @@
         
         <!-- HOME TAB -->
         <div id="homeTab" class="tab-content active">
-            
-            <!-- FIXED OVERLAY LOGO FOR SEARCH BAR ICON -->
             <div class="search-logo-overlay">
                 <img src="https://i.postimg.cc/prCsgYtQ/me-(1).png" alt="Custom Logo">
             </div>
 
-            <!-- KEY LOCK OVERLAY -->
-            <div class="auth-overlay" id="authOverlay">
-                <div class="auth-card">
-                    <i class="fa-solid fa-shield-halved lock-icon"></i>
-                    <h2>48 Hours Access Key</h2>
-                    <p>संगीत सुनने के लिए 48 घंटे की **Access Key** दर्ज करें। Key जनरेट करने के लिए नीचे दिए गए बटन पर क्लिक करें।</p>
+            <!-- SHARE LOCK OVERLAY -->
+            <div class="share-overlay" id="shareOverlay">
+                <div class="share-card">
+                    <i class="fa-brands fa-whatsapp share-icon"></i>
+                    <h2>Unlock Music Player</h2>
+                    <p>प्लेयर को अनलॉक करने के लिए इसे अपने <b>2 WhatsApp दोस्तों</b> के साथ शेयर करें!</p>
                     
-                    <div class="auth-input-group">
-                        <input type="text" id="accessKeyInput" placeholder="Enter Access Key Here">
-                        <button class="auth-btn" onclick="verifyKey()">Unlock Player</button>
+                    <!-- GREEN PROGRESS BAR -->
+                    <div class="progress-container">
+                        <div class="green-progress-bar" id="progressBar"></div>
                     </div>
+                    <div class="progress-text" id="progressText">Progress: 0 / 2 Shares Completed</div>
 
-                    <!-- GET KEY BUTTON (Telegram Channel Link) -->
-                    <a href="https://t.me/+BQmDTgTQkJU3ODA1" target="_blank" class="get-key-btn">
-                        <i class="fa-brands fa-telegram"></i> Get Key From Telegram
-                    </a>
-                    
-                    <div class="error-msg" id="errorMsg">❌ अमान्य Key! कृपया सही Key दर्ज करें।</div>
+                    <!-- SHARE BUTTON -->
+                    <button class="whatsapp-share-btn" onclick="handleWhatsAppShare()">
+                        <i class="fa-brands fa-whatsapp"></i> Share on WhatsApp
+                    </button>
                 </div>
             </div>
 
@@ -530,10 +518,6 @@
 
                 <div class="features-grid">
                     <div class="feature-item">
-                        <i class="fa-solid fa-key"></i>
-                        <span>48-Hour Keys</span>
-                    </div>
-                    <div class="feature-item">
                         <i class="fa-solid fa-music"></i>
                         <span>HQ Music Stream</span>
                     </div>
@@ -544,6 +528,10 @@
                     <div class="feature-item">
                         <i class="fa-brands fa-telegram"></i>
                         <span>Daily Updates</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Secure & Free</span>
                     </div>
                 </div>
 
@@ -568,123 +556,55 @@
     </nav>
 
     <script>
-        // 🔒 Secret Prefix
-        const SECRET_PREFIX = "GTRMF";
+        // 💬 शेयर मैसेज
+        const SHARE_MESSAGE = "🔥 *Gmax Playlist Hub - अनलिमिटेड HQ म्यूजिक!* 🎧\n\n'नाम तो सुना होगा!' 😉 सुनिए अपने पसंदीदा गाने बिना किसी रुकावट के बिल्कुल फ्री में।\n\n👇 *म्यूजिक प्लेयर प्ले करने के लिए लिंक:* \nhttps://gmaxnametosunahoga.edgeone.dev\n\n📢 *डेली नए गानों और अपडेट्स के लिए टेलीग्राम जॉइन करें:* \nhttps://t.me/+BQmDTgTQkJU3ODA1";
 
-        // 🕒 48 घंटे मिलीसेकंड में
-        const EXPIRE_TIME = 48 * 60 * 60 * 1000;
-        let timerInterval = null;
+        let shareCount = 0;
 
-        // ✖️ Telegram Popup Close Function
+        // Telegram Popup Close Function
         function closeTgPopup() {
             document.getElementById('tgPopupModal').style.display = 'none';
         }
 
-        // 📅 आज की Key (Format: GTRMF-YYYYMM + तारीख का अंतिम अंक)
-        function getTodayKey() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0'); 
-            
-            const dayString = String(today.getDate());
-            const lastDigitOfDay = dayString.slice(-1); 
+        // शेयर UI अपडेट
+        function updateShareUI() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const shareOverlay = document.getElementById('shareOverlay');
 
-            return `${SECRET_PREFIX}-${year}${month}${lastDigitOfDay}`;
-        }
+            const percentage = (shareCount / 2) * 100;
+            progressBar.style.width = percentage + '%';
+            progressText.textContent = `Progress: ${shareCount} / 2 Shares Completed`;
 
-        // 📅 कल की Key (48 घंटे बैकअप)
-        function getYesterdayKey() {
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-            const year = yesterday.getFullYear();
-            const month = String(yesterday.getMonth() + 1).padStart(2, '0');
-            
-            const dayString = String(yesterday.getDate());
-            const lastDigitOfDay = dayString.slice(-1);
-
-            return `${SECRET_PREFIX}-${year}${month}${lastDigitOfDay}`;
-        }
-
-        // ⏳ 48 घंटे का लाइव काउंटडाउन टाइमर शुरू करने का फ़ंक्शन
-        function startCountdown(savedTime) {
-            if (timerInterval) clearInterval(timerInterval);
-
-            const timerElement = document.getElementById('headerTimer');
-            
-            function updateTimer() {
-                const currentTime = new Date().getTime();
-                const elapsedTime = currentTime - savedTime;
-                const remainingTime = EXPIRE_TIME - elapsedTime;
-
-                if (remainingTime <= 0) {
-                    clearInterval(timerInterval);
-                    timerElement.textContent = "Expired";
-                    localStorage.removeItem('gmax_key');
-                    localStorage.removeItem('gmax_key_time');
-                    document.getElementById('authOverlay').style.display = 'flex';
-                    return;
-                }
-
-                const hours = Math.floor(remainingTime / (1000 * 60 * 60));
-                const minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
-
-                timerElement.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            if (shareCount >= 2) {
+                setTimeout(() => {
+                    shareOverlay.style.display = 'none';
+                }, 500);
             }
-
-            updateTimer();
-            timerInterval = setInterval(updateTimer, 1000);
         }
 
-        // 🕒 ऑटो-वेरिफिकेशन
+        // WhatsApp Share Trigger
+        function handleWhatsAppShare() {
+            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(SHARE_MESSAGE)}`;
+            window.open(waUrl, '_blank');
+
+            if (shareCount < 2) {
+                shareCount++;
+                localStorage.setItem('gmax_share_count', shareCount);
+                updateShareUI();
+            }
+        }
+
+        // लोड होने पर निष्पादन
         window.addEventListener('DOMContentLoaded', () => {
-            // हर बार पेज खोलने पर Telegram Popup दिखाएगा
             document.getElementById('tgPopupModal').style.display = 'flex';
 
-            const savedKey = localStorage.getItem('gmax_key');
-            const savedTime = localStorage.getItem('gmax_key_time');
-            const currentTime = new Date().getTime();
-
-            const todayKey = getTodayKey();
-            const yesterdayKey = getYesterdayKey();
-
-            if (savedKey && savedTime) {
-                const isTimeValid = (currentTime - savedTime) < EXPIRE_TIME;
-                const isKeyValid = (savedKey === todayKey || savedKey === yesterdayKey);
-
-                if (isTimeValid && isKeyValid) {
-                    document.getElementById('authOverlay').style.display = 'none';
-                    startCountdown(parseInt(savedTime, 10));
-                } else {
-                    localStorage.removeItem('gmax_key');
-                    localStorage.removeItem('gmax_key_time');
-                    document.getElementById('authOverlay').style.display = 'flex';
-                }
+            const savedShares = localStorage.getItem('gmax_share_count');
+            if (savedShares) {
+                shareCount = parseInt(savedShares, 10);
             }
+            updateShareUI();
         });
-
-        // 🔓 Key चेकिंग
-        function verifyKey() {
-            const inputKey = document.getElementById('accessKeyInput').value.trim().toUpperCase();
-            const errorMsg = document.getElementById('errorMsg');
-
-            const todayKey = getTodayKey();
-            const yesterdayKey = getYesterdayKey();
-
-            if (inputKey === todayKey || inputKey === yesterdayKey) {
-                const currentTime = new Date().getTime();
-                
-                localStorage.setItem('gmax_key', inputKey);
-                localStorage.setItem('gmax_key_time', currentTime);
-
-                document.getElementById('authOverlay').style.display = 'none';
-                errorMsg.style.display = 'none';
-
-                startCountdown(currentTime);
-            } else {
-                errorMsg.style.display = 'block';
-            }
-        }
 
         // Tab Switching Logic
         function switchTab(tabId, element) {
