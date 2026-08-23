@@ -30,7 +30,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 15px;
             border-bottom: 2px solid rgba(0, 212, 255, 0.3);
             position: relative;
             z-index: 100;
@@ -39,20 +39,20 @@
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .logo-img {
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             border-radius: 10px;
             object-fit: cover;
             border: 2px solid #00d4ff;
-            box-shadow: 0 0 12px rgba(0, 212, 255, 0.5);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
         }
 
         .logo-text {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: 800;
             background: linear-gradient(90deg, #00d4ff, #ff0055);
             -webkit-background-clip: text;
@@ -64,21 +64,16 @@
             background: rgba(0, 136, 204, 0.2);
             border: 1px solid rgba(0, 136, 204, 0.5);
             color: #0088cc;
-            padding: 6px 14px;
+            padding: 5px 10px;
             border-radius: 20px;
-            font-size: 0.85rem;
+            font-size: 0.78rem;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             cursor: pointer;
             text-decoration: none;
             transition: 0.3s;
-        }
-
-        .header-badge:hover {
-            background: rgba(0, 136, 204, 0.4);
-            box-shadow: 0 0 10px rgba(0, 136, 204, 0.5);
         }
 
         /* Content Container */
@@ -130,6 +125,50 @@
             box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
         }
 
+        /* DARK WHATSAPP OVERLAY BUTTON WITH 2s DELAY ENTRY */
+        .wifi-share-overlay-btn {
+            position: absolute;
+            top: 12px;
+            right: 55px;
+            width: 40px;
+            height: 40px;
+            background: rgba(13, 27, 20, 0.95);
+            border: 2px solid #1fa352;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #25D366;
+            font-size: 1.1rem;
+            cursor: pointer;
+            z-index: 9999;
+            box-shadow: 0 0 12px rgba(37, 211, 102, 0.3);
+            transition: 0.3s;
+            opacity: 0;
+            transform: scale(0.5);
+            pointer-events: none;
+        }
+
+        .wifi-share-overlay-btn.show {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+            animation: pulseGlow 2s infinite;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+
+        .wifi-share-overlay-btn:hover {
+            transform: scale(1.1);
+            background: #112218;
+            border-color: #25D366;
+            color: #25D366;
+        }
+
         /* DYNAMIC SHARE OVERLAY */
         .share-overlay {
             position: absolute;
@@ -172,7 +211,6 @@
             line-height: 1.5;
         }
 
-        /* GREEN PROGRESS BAR */
         .progress-container {
             width: 100%;
             background: rgba(255, 255, 255, 0.1);
@@ -189,7 +227,7 @@
             width: 0%;
             background: linear-gradient(90deg, #25D366, #128C7E);
             border-radius: 15px;
-            transition: width 0.4s ease-in-out;
+            transition: width 0.8s ease-in-out;
             box-shadow: 0 0 10px rgba(37, 211, 102, 0.6);
         }
 
@@ -218,9 +256,10 @@
             transition: 0.3s;
         }
 
-        .whatsapp-share-btn:hover {
-            background: #1ebc57;
-            transform: translateY(-2px);
+        .whatsapp-share-btn:disabled {
+            background: #4a5568;
+            cursor: not-allowed;
+            box-shadow: none;
         }
 
         /* TELEGRAM MODAL POPUP */
@@ -247,12 +286,6 @@
             border: 2px solid #0088cc;
             box-shadow: 0 0 30px rgba(0, 136, 204, 0.4);
             position: relative;
-            animation: popupScale 0.3s ease-out;
-        }
-
-        @keyframes popupScale {
-            0% { transform: scale(0.7); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
         }
 
         .tg-popup-close {
@@ -261,11 +294,6 @@
             font-size: 1.5rem;
             color: #a0aec0;
             cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .tg-popup-close:hover {
-            color: #ff4757;
         }
 
         .tg-icon-large {
@@ -277,14 +305,12 @@
         .tg-popup-card h3 {
             font-size: 1.4rem;
             margin-bottom: 10px;
-            color: #ffffff;
         }
 
         .tg-popup-card p {
             font-size: 0.9rem;
             color: #a0aec0;
             margin-bottom: 20px;
-            line-height: 1.5;
         }
 
         .tg-join-btn {
@@ -300,114 +326,102 @@
             border-radius: 12px;
             font-size: 1rem;
             font-weight: 700;
-            box-shadow: 0 5px 20px rgba(0, 136, 204, 0.4);
         }
 
-        /* ABOUT TAB STYLES */
+        /* ABOUT TAB STYLES (RESTORED BEAUTIFUL DESIGN) */
         #aboutTab {
             overflow-y: auto;
-            padding: 25px 15px;
+            padding: 20px 15px 80px 15px;
             display: flex;
             justify-content: center;
+            align-items: flex-start;
         }
 
         .about-card {
             background: #0d111d;
             border-radius: 20px;
-            padding: 25px 20px;
+            padding: 30px 20px;
             max-width: 480px;
             width: 100%;
-            border: 1px solid rgba(0, 212, 255, 0.25);
+            border: 1px solid rgba(0, 212, 255, 0.3);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             text-align: center;
         }
 
-        .about-avatar {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #00d4ff;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        .about-avatar-container {
+            position: relative;
+            width: 100px;
+            height: 100px;
             margin: 0 auto 15px auto;
         }
 
-        .about-card h2 {
-            font-size: 1.5rem;
-            color: #ffffff;
-            margin-bottom: 5px;
+        .about-avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #00d4ff;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
         }
 
-        .about-tagline {
+        .about-card h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, #00d4ff, #ff0055);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .about-role {
             color: #00d4ff;
-            font-size: 0.88rem;
-            font-weight: 600;
-            margin-bottom: 15px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 20px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
         .about-bio {
-            color: #ffffff;
-            font-size: 1.05rem;
-            font-weight: 700;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            text-align: center;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(255, 0, 85, 0.12));
-            padding: 20px 16px;
-            border-radius: 14px;
-            border: 1px solid rgba(0, 212, 255, 0.4);
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.4);
-            letter-spacing: 0.3px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .feature-item {
-            background: rgba(0, 212, 255, 0.05);
-            border: 1px solid rgba(0, 212, 255, 0.15);
-            padding: 12px 10px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .feature-item i {
-            font-size: 1.2rem;
-            color: #00d4ff;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .feature-item span {
-            font-size: 0.78rem;
             color: #e2e8f0;
-            font-weight: 500;
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(255, 0, 85, 0.08));
+            padding: 18px;
+            border-radius: 14px;
+            border: 1px solid rgba(0, 212, 255, 0.25);
+            box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.05);
         }
 
-        .telegram-btn {
-            display: inline-flex;
+        .social-links-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .social-btn {
+            display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             width: 100%;
-            padding: 14px 20px;
-            background: linear-gradient(135deg, #0088cc 0%, #00a2f3 100%);
-            color: #ffffff;
-            text-decoration: none;
+            padding: 14px;
             border-radius: 12px;
             font-size: 1rem;
             font-weight: 700;
-            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+            text-decoration: none;
             transition: 0.3s;
         }
 
-        .telegram-btn:hover {
+        .social-btn.telegram {
+            background: linear-gradient(135deg, #0088cc 0%, #00a2f3 100%);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+        }
+
+        .social-btn.telegram:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 136, 204, 0.5);
         }
@@ -459,12 +473,11 @@
     <header>
         <div class="logo-container">
             <img src="https://i.postimg.cc/YCtvjdWV/me.jpg" alt="Gmax Logo" class="logo-img">
-            <span class="logo-text">Gmax Playlist Hub</span>
+            <span class="logo-text">Gmax Hub</span>
         </div>
         
-        <!-- TELEGRAM ICON & DIRECT LINK IN HEADER -->
         <a href="https://t.me/+BQmDTgTQkJU3ODA1" target="_blank" class="header-badge">
-            <i class="fa-brands fa-telegram" style="font-size: 1.1rem;"></i> <span>Telegram</span>
+            <i class="fa-brands fa-telegram" style="font-size: 1rem;"></i> <span>Telegram</span>
         </a>
     </header>
 
@@ -477,6 +490,11 @@
                 <img src="https://i.postimg.cc/prCsgYtQ/me-(1).png" alt="Custom Logo">
             </div>
 
+            <!-- DARK WHATSAPP BUTTON (Appears after 2 seconds over WiFi icon) -->
+            <button class="wifi-share-overlay-btn" id="wifiShareBtn" onclick="triggerDirectWhatsAppShare()" title="Share on WhatsApp">
+                <i class="fa-brands fa-whatsapp"></i>
+            </button>
+
             <!-- SHARE LOCK OVERLAY -->
             <div class="share-overlay" id="shareOverlay">
                 <div class="share-card">
@@ -484,14 +502,12 @@
                     <h2>Unlock Music Player</h2>
                     <p>प्लेयर को अनलॉक करने के लिए इसे अपने <b>2 WhatsApp दोस्तों</b> के साथ शेयर करें!</p>
                     
-                    <!-- GREEN PROGRESS BAR -->
                     <div class="progress-container">
                         <div class="green-progress-bar" id="progressBar"></div>
                     </div>
                     <div class="progress-text" id="progressText">Progress: 0 / 2 Shares Completed</div>
 
-                    <!-- SHARE BUTTON -->
-                    <button class="whatsapp-share-btn" onclick="handleWhatsAppShare()">
+                    <button class="whatsapp-share-btn" id="shareBtn" onclick="handleWhatsAppShare()">
                         <i class="fa-brands fa-whatsapp"></i> Share on WhatsApp
                     </button>
                 </div>
@@ -499,45 +515,31 @@
 
             <!-- IFRAME PLAYER -->
             <iframe 
+                id="musicPlayerIframe"
                 src="https://saaz-next.vercel.app" 
                 title="Music Player"
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture">
+                allow="autoplay *; clipboard-write; encrypted-media; picture-in-picture">
             </iframe>
         </div>
 
-        <!-- ABOUT TAB -->
+        <!-- ABOUT TAB (RESTORED) -->
         <div id="aboutTab" class="tab-content">
             <div class="about-card">
-                <img src="https://i.postimg.cc/YCtvjdWV/me.jpg" alt="Gmax Profile" class="about-avatar">
+                <div class="about-avatar-container">
+                    <img src="https://i.postimg.cc/YCtvjdWV/me.jpg" alt="Gmax Profile" class="about-avatar">
+                </div>
                 <h2>Gmax Playlist Hub</h2>
-                <div class="about-tagline">Digital Creator & Developer</div>
+                <div class="about-role">Founder & Digital Creator</div>
                 
                 <div class="about-bio">
                     👑 *"न किसी से होड़ है, न किसी का डर... हम अपने ही बनाए साम्राज्य के इकलौते बादशाह हैं — Gmax।"*
                 </div>
 
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <i class="fa-solid fa-music"></i>
-                        <span>HQ Music Stream</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fa-solid fa-bolt"></i>
-                        <span>Fast & Lite UI</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fa-brands fa-telegram"></i>
-                        <span>Daily Updates</span>
-                    </div>
-                    <div class="feature-item">
-                        <i class="fa-solid fa-shield-halved"></i>
-                        <span>Secure & Free</span>
-                    </div>
+                <div class="social-links-grid">
+                    <a href="https://t.me/+BQmDTgTQkJU3ODA1" target="_blank" class="social-btn telegram">
+                        <i class="fa-brands fa-telegram"></i> Join Telegram Channel
+                    </a>
                 </div>
-
-                <a href="https://t.me/+BQmDTgTQkJU3ODA1" target="_blank" class="telegram-btn">
-                    <i class="fa-brands fa-telegram"></i> Join Telegram Channel
-                </a>
             </div>
         </div>
 
@@ -556,17 +558,44 @@
     </nav>
 
     <script>
-        // 💬 शेयर मैसेज
         const SHARE_MESSAGE = "🔥 *Gmax Playlist Hub - अनलिमिटेड HQ म्यूजिक!* 🎧\n\n'नाम तो सुना होगा!' 😉 सुनिए अपने पसंदीदा गाने बिना किसी रुकावट के बिल्कुल फ्री में।\n\n👇 *म्यूजिक प्लेयर प्ले करने के लिए लिंक:* \nhttps://gmaxnametosunahoga.edgeone.dev\n\n📢 *डेली नए गानों और अपडेट्स के लिए टेलीग्राम जॉइन करें:* \nhttps://t.me/+BQmDTgTQkJU3ODA1";
 
         let shareCount = 0;
+        let isUserPaused = false;
+        let isWaitingForTimer = false;
 
-        // Telegram Popup Close Function
-        function closeTgPopup() {
-            document.getElementById('tgPopupModal').style.display = 'none';
+        function sendCommandToPlayer(action) {
+            const iframe = document.getElementById('musicPlayerIframe');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({ 
+                    type: action, 
+                    autoplay: true, 
+                    repeat: 'all',
+                    continuous: true 
+                }, '*');
+            }
         }
 
-        // शेयर UI अपडेट
+        function initContinuousPlaylist() {
+            if (isUserPaused) return;
+
+            sendCommandToPlayer('PLAY');
+            sendCommandToPlayer('SET_AUTOPLAY_ON');
+            sendCommandToPlayer('SET_REPEAT_ALL');
+        }
+
+        function closeTgPopup() {
+            document.getElementById('tgPopupModal').style.display = 'none';
+            initContinuousPlaylist();
+
+            setTimeout(() => {
+                const wifiBtn = document.getElementById('wifiShareBtn');
+                if (wifiBtn) {
+                    wifiBtn.classList.add('show');
+                }
+            }, 2000);
+        }
+
         function updateShareUI() {
             const progressBar = document.getElementById('progressBar');
             const progressText = document.getElementById('progressText');
@@ -579,23 +608,50 @@
             if (shareCount >= 2) {
                 setTimeout(() => {
                     shareOverlay.style.display = 'none';
+                    initContinuousPlaylist();
                 }, 500);
             }
         }
 
-        // WhatsApp Share Trigger
+        function triggerDirectWhatsAppShare() {
+            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(SHARE_MESSAGE)}`;
+            window.open(waUrl, '_blank');
+        }
+
         function handleWhatsAppShare() {
+            if (isWaitingForTimer || shareCount >= 2) return;
+
+            const shareBtn = document.getElementById('shareBtn');
+            const progressText = document.getElementById('progressText');
+
             const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(SHARE_MESSAGE)}`;
             window.open(waUrl, '_blank');
 
-            if (shareCount < 2) {
-                shareCount++;
-                localStorage.setItem('gmax_share_count', shareCount);
-                updateShareUI();
-            }
+            isWaitingForTimer = true;
+            shareBtn.disabled = true;
+
+            let timeLeft = 10;
+            progressText.textContent = `Verifying share... Please wait (${timeLeft}s)`;
+
+            const timerInterval = setInterval(() => {
+                timeLeft--;
+                if (timeLeft > 0) {
+                    progressText.textContent = `Verifying share... Please wait (${timeLeft}s)`;
+                } else {
+                    clearInterval(timerInterval);
+                    
+                    shareCount++;
+                    localStorage.setItem('gmax_share_count', shareCount);
+                    
+                    isWaitingForTimer = false;
+                    shareBtn.disabled = false;
+                    shareBtn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> Share on WhatsApp`;
+
+                    updateShareUI();
+                }
+            }, 1000);
         }
 
-        // लोड होने पर निष्पादन
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('tgPopupModal').style.display = 'flex';
 
@@ -604,9 +660,13 @@
                 shareCount = parseInt(savedShares, 10);
             }
             updateShareUI();
+
+            document.body.addEventListener('click', () => {
+                isUserPaused = false;
+                initContinuousPlaylist();
+            }, { once: true });
         });
 
-        // Tab Switching Logic
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
