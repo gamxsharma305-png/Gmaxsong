@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gmax Playlist Hub</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -10,76 +10,111 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body, html {
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background-color: #060913;
+            background: linear-gradient(135deg, #0a0e1a 0%, #0d1324 40%, #0a1628 100%);
             color: #ffffff;
         }
 
-        /* Header */
+        /* Soft floating background glow */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.09) 0%, transparent 42%),
+                radial-gradient(circle at 80% 70%, rgba(255, 45, 117, 0.07) 0%, transparent 42%);
+            z-index: -1;
+            animation: bgFloat 22s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgFloat {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-2.5%, 1.8%) scale(1.03); }
+        }
+
+        /* ========== HEADER ========== */
         header {
-            height: 60px;
+            height: 62px;
             width: 100%;
-            background: rgba(6, 9, 19, 0.95);
-            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 15px;
-            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            padding: 0 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
             position: relative;
             z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
         }
 
         .logo-container {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 11px;
         }
 
         .logo-img {
             width: 38px;
             height: 38px;
-            border-radius: 10px;
+            border-radius: 12px;
             object-fit: cover;
-            border: 2px solid #00d4ff;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            border: 1.5px solid rgba(0, 212, 255, 0.55);
+            box-shadow: 
+                0 0 12px rgba(0, 212, 255, 0.4),
+                0 0 28px rgba(0, 212, 255, 0.18);
+            transition: box-shadow 0.4s ease;
         }
 
         .logo-text {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 800;
-            background: linear-gradient(90deg, #00d4ff, #ff0055);
+            background: linear-gradient(90deg, #00d4ff, #ff2d75);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.3));
         }
 
         .header-badge {
-            background: rgba(0, 136, 204, 0.2);
-            border: 1px solid rgba(0, 136, 204, 0.5);
-            color: #0088cc;
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.78rem;
+            background: rgba(0, 136, 204, 0.18);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 170, 255, 0.4);
+            color: #5ec8ff;
+            padding: 7px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
             font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 5px;
-            cursor: pointer;
+            gap: 6px;
             text-decoration: none;
-            transition: 0.3s;
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 18px rgba(0, 136, 204, 0.22);
         }
 
-        /* Content Container */
+        .header-badge:active {
+            transform: scale(0.95);
+            background: rgba(0, 136, 204, 0.3);
+            box-shadow: 0 2px 12px rgba(0, 136, 204, 0.35);
+        }
+
+        /* ========== CONTENT ========== */
         .content-container {
             width: 100%;
-            height: calc(100vh - 120px);
+            height: calc(100vh - 122px);
             position: relative;
         }
 
@@ -98,13 +133,13 @@
             width: 100%;
             height: 100%;
             border: none;
+            background: #060913;
         }
 
-        /* SEARCH LOGO OVERLAY */
         .search-logo-overlay {
             position: absolute;
-            top: 10px;
-            left: 12px;
+            top: 12px;
+            left: 14px;
             width: 44px;
             height: 44px;
             z-index: 999;
@@ -112,8 +147,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #060913;
-            border-radius: 12px;
+            background: rgba(6, 9, 19, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 14px;
+            border: 1px solid rgba(0, 212, 255, 0.35);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(0, 212, 255, 0.15);
         }
 
         .search-logo-overlay img {
@@ -121,31 +159,33 @@
             height: 100%;
             border-radius: 12px;
             object-fit: cover;
-            border: 1.5px solid #00d4ff;
-            box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
         }
 
-        /* DARK WHATSAPP OVERLAY BUTTON WITH 2s DELAY ENTRY */
+        /* WhatsApp floating button */
         .wifi-share-overlay-btn {
             position: absolute;
-            top: 12px;
-            right: 55px;
-            width: 40px;
-            height: 40px;
-            background: rgba(13, 27, 20, 0.95);
-            border: 2px solid #1fa352;
+            top: 14px;
+            right: 58px;
+            width: 42px;
+            height: 42px;
+            background: rgba(13, 40, 28, 0.65);
+            backdrop-filter: blur(16px) saturate(160%);
+            -webkit-backdrop-filter: blur(16px) saturate(160%);
+            border: 1.5px solid rgba(37, 211, 102, 0.5);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: #25D366;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             cursor: pointer;
             z-index: 9999;
-            box-shadow: 0 0 12px rgba(37, 211, 102, 0.3);
-            transition: 0.3s;
+            box-shadow: 
+                0 4px 20px rgba(37, 211, 102, 0.3),
+                0 0 18px rgba(37, 211, 102, 0.2);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             opacity: 0;
-            transform: scale(0.5);
+            transform: scale(0.35);
             pointer-events: none;
         }
 
@@ -153,89 +193,125 @@
             opacity: 1;
             transform: scale(1);
             pointer-events: auto;
-            animation: pulseGlow 2s infinite;
+            animation: pulseGlow 2.8s ease-in-out infinite;
         }
 
         @keyframes pulseGlow {
-            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
-            70% { box-shadow: 0 0 0 8px rgba(37, 211, 102, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+            0%, 100% { 
+                box-shadow: 
+                    0 4px 20px rgba(37, 211, 102, 0.3),
+                    0 0 0 0 rgba(37, 211, 102, 0.45);
+            }
+            50% { 
+                box-shadow: 
+                    0 4px 25px rgba(37, 211, 102, 0.4),
+                    0 0 0 10px rgba(37, 211, 102, 0);
+            }
         }
 
-        .wifi-share-overlay-btn:hover {
-            transform: scale(1.1);
-            background: #112218;
-            border-color: #25D366;
-            color: #25D366;
+        .wifi-share-overlay-btn:active {
+            transform: scale(0.88);
+            transition: transform 0.15s ease;
         }
 
-        /* DYNAMIC SHARE OVERLAY */
+        /* ========== SHARE OVERLAY ========== */
         .share-overlay {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: #060913;
+            background: rgba(6, 9, 19, 0.72);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 200;
-            padding: 20px;
+            padding: 24px;
         }
 
         .share-card {
-            background: #0d111d;
-            border-radius: 20px;
-            padding: 30px 25px;
-            max-width: 420px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            border-radius: 28px;
+            padding: 36px 28px;
+            max-width: 400px;
             width: 100%;
             text-align: center;
-            border: 1px solid rgba(37, 211, 102, 0.4);
-            box-shadow: 0 15px 35px rgba(37, 211, 102, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.55),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12),
+                0 0 40px rgba(37, 211, 102, 0.08);
+            animation: cardAppear 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.92) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         .share-icon {
-            font-size: 3rem;
+            font-size: 3.2rem;
             color: #25D366;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
+            filter: drop-shadow(0 0 14px rgba(37, 211, 102, 0.55));
+            animation: iconFloat 3.5s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
         }
 
         .share-card h2 {
-            font-size: 1.4rem;
-            margin-bottom: 8px;
+            font-size: 1.45rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.3px;
         }
 
         .share-card p {
-            font-size: 0.9rem;
-            color: #a0aec0;
-            margin-bottom: 20px;
-            line-height: 1.5;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.72);
+            margin-bottom: 26px;
+            line-height: 1.55;
         }
 
         .progress-container {
             width: 100%;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            height: 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50px;
+            height: 14px;
             overflow: hidden;
-            margin-bottom: 12px;
-            position: relative;
-            border: 1px solid rgba(37, 211, 102, 0.3);
+            margin-bottom: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .green-progress-bar {
             height: 100%;
             width: 0%;
             background: linear-gradient(90deg, #25D366, #128C7E);
-            border-radius: 15px;
-            transition: width 0.8s ease-in-out;
-            box-shadow: 0 0 10px rgba(37, 211, 102, 0.6);
+            border-radius: 50px;
+            transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+            box-shadow: 
+                0 0 12px rgba(37, 211, 102, 0.7),
+                0 0 24px rgba(37, 211, 102, 0.3);
         }
 
         .progress-text {
-            font-size: 0.85rem;
+            font-size: 0.88rem;
             font-weight: 700;
             color: #25D366;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            letter-spacing: 0.2px;
+            text-shadow: 0 0 12px rgba(37, 211, 102, 0.4);
         }
 
         .whatsapp-share-btn {
@@ -244,73 +320,101 @@
             justify-content: center;
             gap: 10px;
             width: 100%;
-            padding: 14px;
-            background: #25D366;
+            padding: 16px;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
             color: #ffffff;
             border: none;
-            border-radius: 12px;
-            font-size: 1rem;
+            border-radius: 18px;
+            font-size: 1.05rem;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-            transition: 0.3s;
+            box-shadow: 
+                0 8px 25px rgba(37, 211, 102, 0.4),
+                0 0 20px rgba(37, 211, 102, 0.2);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .whatsapp-share-btn:active {
+            transform: scale(0.96);
+            box-shadow: 
+                0 4px 15px rgba(37, 211, 102, 0.35),
+                0 0 15px rgba(37, 211, 102, 0.15);
         }
 
         .whatsapp-share-btn:disabled {
-            background: #4a5568;
-            cursor: not-allowed;
+            background: rgba(255, 255, 255, 0.12);
+            color: rgba(255, 255, 255, 0.4);
             box-shadow: none;
+            cursor: not-allowed;
         }
 
-        /* TELEGRAM MODAL POPUP */
+        /* ========== TELEGRAM POPUP ========== */
         .tg-popup-overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 9999;
-            padding: 20px;
+            padding: 24px;
         }
 
         .tg-popup-card {
-            background: #0d111d;
-            border-radius: 20px;
-            padding: 30px 25px;
-            max-width: 380px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(36px) saturate(180%);
+            -webkit-backdrop-filter: blur(36px) saturate(180%);
+            border-radius: 28px;
+            padding: 36px 28px;
+            max-width: 370px;
             width: 100%;
             text-align: center;
-            border: 2px solid #0088cc;
-            box-shadow: 0 0 30px rgba(0, 136, 204, 0.4);
+            border: 1px solid rgba(0, 170, 255, 0.28);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.6),
+                0 0 50px rgba(0, 136, 204, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            animation: cardAppear 0.5s cubic-bezier(0.22, 1, 0.36, 1);
             position: relative;
         }
 
         .tg-popup-close {
             position: absolute;
-            top: 12px; right: 15px;
-            font-size: 1.5rem;
-            color: #a0aec0;
+            top: 16px; right: 18px;
+            font-size: 1.6rem;
+            color: rgba(255, 255, 255, 0.5);
             cursor: pointer;
+            transition: all 0.25s ease;
+            line-height: 1;
+        }
+
+        .tg-popup-close:active {
+            color: #fff;
+            transform: scale(0.85);
         }
 
         .tg-icon-large {
-            font-size: 3.5rem;
+            font-size: 3.6rem;
             color: #0088cc;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 0 18px rgba(0, 136, 204, 0.55));
+            animation: iconFloat 3.8s ease-in-out infinite;
         }
 
         .tg-popup-card h3 {
             font-size: 1.4rem;
+            font-weight: 800;
             margin-bottom: 10px;
         }
 
         .tg-popup-card p {
-            font-size: 0.9rem;
-            color: #a0aec0;
-            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 26px;
+            line-height: 1.5;
         }
 
         .tg-join-btn {
@@ -319,40 +423,58 @@
             justify-content: center;
             gap: 10px;
             width: 100%;
-            padding: 14px;
+            padding: 16px;
             background: linear-gradient(135deg, #0088cc 0%, #00a2f3 100%);
             color: #ffffff;
             text-decoration: none;
-            border-radius: 12px;
-            font-size: 1rem;
+            border-radius: 18px;
+            font-size: 1.05rem;
             font-weight: 700;
+            box-shadow: 
+                0 8px 25px rgba(0, 136, 204, 0.45),
+                0 0 22px rgba(0, 136, 204, 0.25);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* ABOUT TAB STYLES (RESTORED BEAUTIFUL DESIGN) */
+        .tg-join-btn:active {
+            transform: scale(0.96);
+            box-shadow: 
+                0 4px 15px rgba(0, 136, 204, 0.35),
+                0 0 15px rgba(0, 136, 204, 0.2);
+        }
+
+        /* ========== ABOUT TAB ========== */
         #aboutTab {
             overflow-y: auto;
-            padding: 20px 15px 80px 15px;
+            padding: 28px 18px 90px 18px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
+            -webkit-overflow-scrolling: touch;
         }
 
         .about-card {
-            background: #0d111d;
-            border-radius: 20px;
-            padding: 30px 20px;
-            max-width: 480px;
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            border-radius: 28px;
+            padding: 36px 24px;
+            max-width: 460px;
             width: 100%;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                0 0 40px rgba(0, 212, 255, 0.06);
+            animation: cardAppear 0.5s cubic-bezier(0.22, 1, 0.36, 1);
             text-align: center;
         }
 
         .about-avatar-container {
             position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 15px auto;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 20px auto;
         }
 
         .about-avatar {
@@ -360,45 +482,43 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #00d4ff;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+            border: 3px solid rgba(0, 212, 255, 0.55);
+            box-shadow: 
+                0 0 25px rgba(0, 212, 255, 0.4),
+                0 0 50px rgba(0, 212, 255, 0.15);
+            transition: box-shadow 0.4s ease;
         }
 
         .about-card h2 {
-            font-size: 1.4rem;
+            font-size: 1.5rem;
             font-weight: 800;
-            margin-bottom: 5px;
-            background: linear-gradient(90deg, #00d4ff, #ff0055);
+            margin-bottom: 6px;
+            background: linear-gradient(90deg, #00d4ff, #ff2d75);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.25));
         }
 
         .about-role {
-            color: #00d4ff;
+            color: #5ec8ff;
             font-size: 0.9rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 12px rgba(0, 170, 255, 0.3);
         }
 
         .about-bio {
-            color: #e2e8f0;
-            font-size: 0.95rem;
-            font-weight: 600;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(255, 0, 85, 0.08));
-            padding: 18px;
-            border-radius: 14px;
-            border: 1px solid rgba(0, 212, 255, 0.25);
-            box-shadow: inset 0 0 10px rgba(0, 212, 255, 0.05);
-        }
-
-        .social-links-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.98rem;
+            font-weight: 500;
+            line-height: 1.65;
+            margin-bottom: 28px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .social-btn {
@@ -407,56 +527,79 @@
             justify-content: center;
             gap: 10px;
             width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 1rem;
+            padding: 16px;
+            border-radius: 18px;
+            font-size: 1.05rem;
             font-weight: 700;
             text-decoration: none;
-            transition: 0.3s;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .social-btn.telegram {
             background: linear-gradient(135deg, #0088cc 0%, #00a2f3 100%);
             color: #ffffff;
-            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.3);
+            box-shadow: 
+                0 8px 25px rgba(0, 136, 204, 0.4),
+                0 0 20px rgba(0, 136, 204, 0.2);
         }
 
-        .social-btn.telegram:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.5);
+        .social-btn.telegram:active {
+            transform: scale(0.96);
+            box-shadow: 
+                0 4px 15px rgba(0, 136, 204, 0.3),
+                0 0 12px rgba(0, 136, 204, 0.15);
         }
 
-        /* Bottom Nav */
+        /* ========== BOTTOM NAV ========== */
         .bottom-nav {
             height: 60px;
             width: 100%;
-            background: rgba(6, 9, 19, 0.98);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
             display: flex;
             justify-content: space-around;
             align-items: center;
             position: fixed;
             bottom: 0; left: 0;
             z-index: 100;
+            box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.25);
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            color: #718096;
+            gap: 5px;
+            color: rgba(255, 255, 255, 0.45);
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
+            font-weight: 600;
             width: 50%;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            padding: 6px 0;
         }
 
-        .nav-item.active { color: #00d4ff; }
+        .nav-item i {
+            font-size: 1.25rem;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .nav-item.active {
+            color: #00d4ff;
+        }
+
+        .nav-item.active i {
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.7));
+        }
     </style>
 </head>
 <body>
 
-    <!-- TELEGRAM POPUP MODAL -->
+    <!-- TELEGRAM POPUP -->
     <div class="tg-popup-overlay" id="tgPopupModal">
         <div class="tg-popup-card">
             <span class="tg-popup-close" onclick="closeTgPopup()">&times;</span>
@@ -477,25 +620,22 @@
         </div>
         
         <a href="https://t.me/+BQmDTgTQkJU3ODA1" target="_blank" class="header-badge">
-            <i class="fa-brands fa-telegram" style="font-size: 1rem;"></i> <span>Telegram</span>
+            <i class="fa-brands fa-telegram"></i> <span>Telegram</span>
         </a>
     </header>
 
-    <!-- Content Container -->
+    <!-- Content -->
     <div class="content-container">
         
-        <!-- HOME TAB -->
         <div id="homeTab" class="tab-content active">
             <div class="search-logo-overlay">
                 <img src="https://i.postimg.cc/prCsgYtQ/me-(1).png" alt="Custom Logo">
             </div>
 
-            <!-- DARK WHATSAPP BUTTON (Appears after 2 seconds over WiFi icon) -->
             <button class="wifi-share-overlay-btn" id="wifiShareBtn" onclick="triggerDirectWhatsAppShare()" title="Share on WhatsApp">
                 <i class="fa-brands fa-whatsapp"></i>
             </button>
 
-            <!-- SHARE LOCK OVERLAY -->
             <div class="share-overlay" id="shareOverlay">
                 <div class="share-card">
                     <i class="fa-brands fa-whatsapp share-icon"></i>
@@ -513,16 +653,13 @@
                 </div>
             </div>
 
-            <!-- IFRAME PLAYER -->
             <iframe 
                 id="musicPlayerIframe"
-                src="https://saaz-next.vercel.app" 
                 title="Music Player"
                 allow="autoplay *; clipboard-write; encrypted-media; picture-in-picture">
             </iframe>
         </div>
 
-        <!-- ABOUT TAB (RESTORED) -->
         <div id="aboutTab" class="tab-content">
             <div class="about-card">
                 <div class="about-avatar-container">
@@ -545,7 +682,7 @@
 
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Nav -->
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('homeTab', this)">
             <i class="fa-solid fa-house"></i>
@@ -558,6 +695,8 @@
     </nav>
 
     <script>
+        const _0xplayer = atob("aHR0cHM6Ly9zYWF6LW5leHQudmVyY2VsLmFwcA==");
+
         const SHARE_MESSAGE = "🔥 *Gmax Playlist Hub - अनलिमिटेड HQ म्यूजिक!* 🎧\n\n'नाम तो सुना होगा!' 😉 सुनिए अपने पसंदीदा गाने बिना किसी रुकावट के बिल्कुल फ्री में।\n\n👇 *म्यूजिक प्लेयर प्ले करने के लिए लिंक:* \nhttps://gmaxnametosunahoga.edgeone.dev\n\n📢 *डेली नए गानों और अपडेट्स के लिए टेलीग्राम जॉइन करें:* \nhttps://t.me/+BQmDTgTQkJU3ODA1";
 
         let shareCount = 0;
@@ -578,7 +717,6 @@
 
         function initContinuousPlaylist() {
             if (isUserPaused) return;
-
             sendCommandToPlayer('PLAY');
             sendCommandToPlayer('SET_AUTOPLAY_ON');
             sendCommandToPlayer('SET_REPEAT_ALL');
@@ -590,9 +728,7 @@
 
             setTimeout(() => {
                 const wifiBtn = document.getElementById('wifiShareBtn');
-                if (wifiBtn) {
-                    wifiBtn.classList.add('show');
-                }
+                if (wifiBtn) wifiBtn.classList.add('show');
             }, 2000);
         }
 
@@ -639,26 +775,24 @@
                     progressText.textContent = `Verifying share... Please wait (${timeLeft}s)`;
                 } else {
                     clearInterval(timerInterval);
-                    
                     shareCount++;
                     localStorage.setItem('gmax_share_count', shareCount);
-                    
                     isWaitingForTimer = false;
                     shareBtn.disabled = false;
                     shareBtn.innerHTML = `<i class="fa-brands fa-whatsapp"></i> Share on WhatsApp`;
-
                     updateShareUI();
                 }
             }, 1000);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            const iframe = document.getElementById('musicPlayerIframe');
+            if (iframe) iframe.src = _0xplayer;
+
             document.getElementById('tgPopupModal').style.display = 'flex';
 
             const savedShares = localStorage.getItem('gmax_share_count');
-            if (savedShares) {
-                shareCount = parseInt(savedShares, 10);
-            }
+            if (savedShares) shareCount = parseInt(savedShares, 10);
             updateShareUI();
 
             document.body.addEventListener('click', () => {
