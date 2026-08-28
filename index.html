@@ -1,31 +1,12 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gmax Playlist Hub</title>
     
-    <!-- Dynamic Manifest with Correct Start URL -->
-    <link rel="manifest" href='data:application/manifest+json,{
-      "name": "Gmax Playlist Hub",
-      "short_name": "Gmax Hub",
-      "start_url": "./index.html",
-      "display": "standalone",
-      "background_color": "#0a0e1a",
-      "theme_color": "#0a0e1a",
-      "icons": [
-        {
-          "src": "https://i.postimg.cc/YCtvjdWV/me.jpg",
-          "sizes": "192x192",
-          "type": "image/jpeg"
-        },
-        {
-          "src": "https://i.postimg.cc/YCtvjdWV/me.jpg",
-          "sizes": "512x512",
-          "type": "image/jpeg"
-        }
-      ]
-    }'>
+    <!-- External Manifest Link -->
+    <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#0a0e1a">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/YCtvjdWV/me.jpg">
 
@@ -919,7 +900,7 @@
     <script>
         const _0xplayer = atob("aHR0cHM6Ly9zYWF6LW5leHQudmVyY2VsLmFwcA==");
 
-        const SHARE_MESSAGE = "🔥 *Gmax Playlist Hub - अनलिमिटेड HQ म्यूजिक!* 🎧\n\n'नाम तो सुना होगा!' 😉 सुनिए अपने पसंदीदा गाने बिना किसी रुकावट के बिल्कुल फ्री में।\n\n👇 *म्यूजिक प्लेयर प्ले करने के लिए लिंक:* \nhttps://song-by-gmax-gmaxstady.vercel.app\n\n📢 *डेली नए गानों और अपडेट्स के लिए टेलीग्राम जॉइन करें:* \nhttps://t.me/+BQmDTgTQkJU3ODA1";
+        const SHARE_MESSAGE = "🔥 *Gmax Playlist Hub - अनलिमिटेड HQ म्यूजिक!* 🎧\n\n'नाम तो सुना होगा!' 😉 सुनिए अपने पसंदीदा गाने बिना किसी रुकावट के बिल्कुल फ्री में।\n\n👇 *म्यूजिक प्लेयर प्ले करने के लिए लिंक:* \nhttps://songbygmax.vercel.app\n\n📢 *डेली नए गानों और अपडेट्स के लिए टेलीग्राम जॉइन करें:* \nhttps://t.me/+BQmDTgTQkJU3ODA1";
 
         let shareCount = 0;
         let isUserPaused = false;
@@ -1124,21 +1105,11 @@
             }
         }
 
-        // Register Dynamic Service Worker
+        // Register Real Service Worker File
         if ('serviceWorker' in navigator) {
-            const swCode = `
-                self.addEventListener('install', (e) => self.skipWaiting());
-                self.addEventListener('activate', (e) => self.clients.claim());
-                self.addEventListener('fetch', (e) => {
-                    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-                });
-            `;
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            const swUrl = URL.createObjectURL(blob);
-
-            navigator.serviceWorker.register(swUrl)
-                .then(() => console.log('Service Worker Registered'))
-                .catch((err) => console.log('SW Error:', err));
+            navigator.serviceWorker.register('./sw.js')
+                .then(() => console.log('Service Worker Registered Successfully'))
+                .catch((err) => console.log('SW Registration Error:', err));
         }
 
         // Listen for BeforeInstallPrompt (Chrome/Edge/Android)
