@@ -1,0 +1,20 @@
+{
+  "name": "Gmax Playlist Hub",
+  "short_name": "Gmax Hub",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#0a0e1a",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/YCtvjdWV/me.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "https://i.postimg.cc/YCtvjdWV/me.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
