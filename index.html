@@ -4,6 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Gmax Playlist Hub</title>
+    
+    <!-- Dynamic Manifest with Correct Start URL -->
+    <link rel="manifest" href='data:application/manifest+json,{
+      "name": "Gmax Playlist Hub",
+      "short_name": "Gmax Hub",
+      "start_url": "./index.html",
+      "display": "standalone",
+      "background_color": "#0a0e1a",
+      "theme_color": "#0a0e1a",
+      "icons": [
+        {
+          "src": "https://i.postimg.cc/YCtvjdWV/me.jpg",
+          "sizes": "192x192",
+          "type": "image/jpeg"
+        },
+        {
+          "src": "https://i.postimg.cc/YCtvjdWV/me.jpg",
+          "sizes": "512x512",
+          "type": "image/jpeg"
+        }
+      ]
+    }'>
+    <meta name="theme-color" content="#0a0e1a">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/YCtvjdWV/me.jpg">
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -87,6 +112,12 @@
             filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.3));
         }
 
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .header-badge {
             background: rgba(0, 136, 204, 0.18);
             backdrop-filter: blur(12px);
@@ -109,6 +140,27 @@
             transform: scale(0.95);
             background: rgba(0, 136, 204, 0.3);
             box-shadow: 0 2px 12px rgba(0, 136, 204, 0.35);
+        }
+
+        /* App Install Button Style */
+        .install-btn {
+            background: linear-gradient(90deg, #00d4ff, #0088cc);
+            border: 1px solid rgba(0, 212, 255, 0.5);
+            color: #ffffff;
+            padding: 7px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: none;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.35s ease;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .install-btn:active {
+            transform: scale(0.95);
         }
 
         /* ========== CONTENT ========== */
@@ -381,19 +433,33 @@
             position: relative;
         }
 
-        .tg-popup-close {
+        .tg-popup-close, .install-popup-close {
             position: absolute;
-            top: 16px; right: 18px;
-            font-size: 1.6rem;
-            color: rgba(255, 255, 255, 0.5);
+            top: 10px; right: 10px;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.9rem;
+            color: rgba(255, 255, 255, 0.85);
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.2s ease;
             line-height: 1;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.12);
+            z-index: 20;
+            pointer-events: auto;
+            -webkit-tap-highlight-color: transparent;
+            border: none;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
-        .tg-popup-close:active {
+        .tg-popup-close:active, .install-popup-close:active {
             color: #fff;
-            transform: scale(0.85);
+            background: rgba(255,255,255,0.2);
+            transform: scale(0.9);
         }
 
         .tg-icon-large {
@@ -595,14 +661,145 @@
             transform: scale(1.15);
             filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.7));
         }
+
+        /* ========== INSTALL APP POPUP ========== */
+        .install-popup-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 24px;
+        }
+
+        .install-popup-overlay.show {
+            display: flex;
+        }
+
+        .install-popup-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(36px) saturate(180%);
+            -webkit-backdrop-filter: blur(36px) saturate(180%);
+            border-radius: 28px;
+            padding: 36px 28px;
+            max-width: 370px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid rgba(0, 212, 255, 0.35);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.6),
+                0 0 50px rgba(0, 212, 255, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            animation: cardAppear 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+        }
+
+        .install-icon-large {
+            font-size: 3.4rem;
+            background: linear-gradient(135deg, #00d4ff, #ff2d75);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 0 18px rgba(0, 212, 255, 0.45));
+            animation: iconFloat 3.8s ease-in-out infinite;
+        }
+
+        .install-popup-card h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .install-popup-card p {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+
+        .install-now-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #00d4ff 0%, #0088cc 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 18px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 
+                0 8px 25px rgba(0, 212, 255, 0.45),
+                0 0 22px rgba(0, 212, 255, 0.25);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            margin-bottom: 12px;
+        }
+
+        .install-now-btn:active {
+            transform: scale(0.96);
+            box-shadow: 
+                0 4px 15px rgba(0, 212, 255, 0.35),
+                0 0 15px rgba(0, 212, 255, 0.2);
+        }
+
+        .install-later-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 12px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .install-later-btn:active {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .ios-install-steps {
+            display: none;
+            text-align: left;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 12px;
+            font-size: 0.88rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+        }
+
+        .ios-install-steps.show {
+            display: block;
+        }
+
+        .ios-install-steps ol {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .ios-install-steps li {
+            margin-bottom: 6px;
+        }
+
     </style>
 </head>
 <body>
 
-    <!-- TELEGRAM POPUP -->
-    <div class="tg-popup-overlay" id="tgPopupModal">
-        <div class="tg-popup-card">
-            <span class="tg-popup-close" onclick="closeTgPopup()">&times;</span>
+    <div class="tg-popup-overlay" id="tgPopupModal" onclick="if(event.target===this)closeTgPopup()">
+        <div class="tg-popup-card" onclick="event.stopPropagation()">
+            <span class="tg-popup-close" role="button" aria-label="Close" onclick="closeTgPopup(); return false;">&times;</span>
             <i class="fa-brands fa-telegram tg-icon-large"></i>
             <h3>Join Telegram Channel</h3>
             <p>नए गानों की प्लेलिस्ट और अपडेट्स के लिए हमारे टेलीग्राम चैनल से जुड़ें!</p>
@@ -612,19 +809,45 @@
         </div>
     </div>
 
-    <!-- Header -->
+    <!-- Install App Popup -->
+    <div class="install-popup-overlay" id="installPopupModal" onclick="if(event.target===this)closeInstallPopup()">
+        <div class="install-popup-card" onclick="event.stopPropagation()">
+            <span class="install-popup-close" role="button" aria-label="Close" onclick="closeInstallPopup(); return false;">&times;</span>
+            <i class="fa-solid fa-mobile-screen-button install-icon-large"></i>
+            <h3>App Install करें</h3>
+            <p>Gmax Playlist Hub को अपने फोन पर ऐप की तरह इंस्टॉल करें — फास्ट, ऑफलाइन-ready और होम स्क्रीन पर!</p>
+            <button class="install-now-btn" id="installNowBtn" onclick="triggerInstall()">
+                <i class="fa-solid fa-download"></i> Install App Now
+            </button>
+            <button class="install-later-btn" onclick="closeInstallPopup()">बाद में</button>
+            <div class="ios-install-steps" id="iosInstallSteps">
+                <strong>iPhone पर इंस्टॉल:</strong>
+                <ol>
+                    <li>Safari में नीचे <b>Share</b> बटन दबाएं</li>
+                    <li><b>Add to Home Screen</b> चुनें</li>
+                    <li>Add दबाकर इंस्टॉल करें</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
     <header>
         <div class="logo-container">
             <img src="https://i.postimg.cc/YCtvjdWV/me.jpg" alt="Gmax Logo" class="logo-img">
             <span class="logo-text">Gmax Hub</span>
         </div>
         
-        <a href="https://t.me/+BQmDTgTQkJU3ODA1" target="_blank" class="header-badge">
-            <i class="fa-brands fa-telegram"></i> <span>Telegram</span>
-        </a>
+        <div class="header-actions">
+            <button id="pwaInstallBtn" class="install-btn">
+                <i class="fa-solid fa-download"></i> <span>Install App</span>
+            </button>
+
+            <a href="https://t.me/+BQmDTgTQkJU3ODA1" target="_blank" class="header-badge">
+                <i class="fa-brands fa-telegram"></i> <span>Telegram</span>
+            </a>
+        </div>
     </header>
 
-    <!-- Content -->
     <div class="content-container">
         
         <div id="homeTab" class="tab-content active">
@@ -682,7 +905,6 @@
 
     </div>
 
-    <!-- Bottom Nav -->
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('homeTab', this)">
             <i class="fa-solid fa-house"></i>
@@ -697,7 +919,7 @@
     <script>
         const _0xplayer = atob("aHR0cHM6Ly9zYWF6LW5leHQudmVyY2VsLmFwcA==");
 
-        const SHARE_MESSAGE = "🔥 *Gmax Playlist Hub - अनलिमिटेड HQ म्यूजिक!* 🎧\n\n'नाम तो सुना होगा!' 😉 सुनिए अपने पसंदीदा गाने बिना किसी रुकावट के बिल्कुल फ्री में।\n\n👇 *म्यूजिक प्लेयर प्ले करने के लिए लिंक:* \nhttps://gmaxnametosunahoga.edgeone.dev\n\n📢 *डेली नए गानों और अपडेट्स के लिए टेलीग्राम जॉइन करें:* \nhttps://t.me/+BQmDTgTQkJU3ODA1";
+        const SHARE_MESSAGE = "🔥 *Gmax Playlist Hub - अनलिमिटेड HQ म्यूजिक!* 🎧\n\n'नाम तो सुना होगा!' 😉 सुनिए अपने पसंदीदा गाने बिना किसी रुकावट के बिल्कुल फ्री में।\n\n👇 *म्यूजिक प्लेयर प्ले करने के लिए लिंक:* \nhttps://song-by-gmax-gmaxstady.vercel.app\n\n📢 *डेली नए गानों और अपडेट्स के लिए टेलीग्राम जॉइन करें:* \nhttps://t.me/+BQmDTgTQkJU3ODA1";
 
         let shareCount = 0;
         let isUserPaused = false;
@@ -723,13 +945,27 @@
         }
 
         function closeTgPopup() {
-            document.getElementById('tgPopupModal').style.display = 'none';
-            initContinuousPlaylist();
-
-            setTimeout(() => {
-                const wifiBtn = document.getElementById('wifiShareBtn');
-                if (wifiBtn) wifiBtn.classList.add('show');
+            try {
+                var m = document.getElementById('tgPopupModal');
+                if (m) {
+                    m.style.display = 'none';
+                    m.style.visibility = 'hidden';
+                }
+            } catch(e) {}
+            try { initContinuousPlaylist(); } catch(e) {}
+            setTimeout(function() {
+                try {
+                    var wifiBtn = document.getElementById('wifiShareBtn');
+                    if (wifiBtn) wifiBtn.classList.add('show');
+                } catch(e) {}
             }, 2000);
+            setTimeout(function() {
+                try {
+                    if (typeof showInstallPopup === 'function') {
+                        showInstallPopup();
+                    }
+                } catch(e) {}
+            }, 1600);
         }
 
         function updateShareUI() {
@@ -785,20 +1021,38 @@
             }, 1000);
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', function() {
             const iframe = document.getElementById('musicPlayerIframe');
             if (iframe) iframe.src = _0xplayer;
 
-            document.getElementById('tgPopupModal').style.display = 'flex';
+            var tgModal = document.getElementById('tgPopupModal');
+            if (tgModal) tgModal.style.display = 'flex';
 
             const savedShares = localStorage.getItem('gmax_share_count');
             if (savedShares) shareCount = parseInt(savedShares, 10);
             updateShareUI();
 
-            document.body.addEventListener('click', () => {
+            document.body.addEventListener('click', function() {
                 isUserPaused = false;
                 initContinuousPlaylist();
             }, { once: true });
+
+            var tgClose = document.querySelector('.tg-popup-close');
+            if (tgClose) {
+                tgClose.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeTgPopup();
+                });
+            }
+            var instClose = document.querySelector('.install-popup-close');
+            if (instClose) {
+                instClose.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    closeInstallPopup();
+                });
+            }
         });
 
         function switchTab(tabId, element) {
@@ -806,6 +1060,115 @@
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             element.classList.add('active');
+        }
+
+        /* ========== PWA INSTALL LOGIC & SERVICE WORKER ========== */
+        let deferredPrompt = null;
+        const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+        const installPopup = document.getElementById('installPopupModal');
+        const installNowBtn = document.getElementById('installNowBtn');
+        const iosSteps = document.getElementById('iosInstallSteps');
+
+        function isStandalone() {
+            return window.matchMedia('(display-mode: standalone)').matches ||
+                   window.navigator.standalone === true ||
+                   document.referrer.includes('android-app://');
+        }
+
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        }
+
+        function closeInstallPopup() {
+            if (installPopup) {
+                installPopup.classList.remove('show');
+                localStorage.setItem('gmax_install_dismissed', Date.now().toString());
+            }
+        }
+
+        function showInstallPopup() {
+            if (isStandalone()) return;
+            const dismissed = localStorage.getItem('gmax_install_dismissed');
+            if (dismissed) {
+                const daysSince = (Date.now() - parseInt(dismissed, 10)) / (1000 * 60 * 60 * 24);
+                if (daysSince < 3) return;
+            }
+            if (installPopup) {
+                installPopup.classList.add('show');
+                if (isIOS()) {
+                    if (iosSteps) iosSteps.classList.add('show');
+                    if (installNowBtn) {
+                        installNowBtn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> Share से Add to Home Screen';
+                        installNowBtn.onclick = function() {
+                            if (iosSteps) iosSteps.classList.add('show');
+                        };
+                    }
+                }
+            }
+        }
+
+        async function triggerInstall() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log('Install outcome:', outcome);
+                deferredPrompt = null;
+                if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
+                closeInstallPopup();
+                if (outcome === 'accepted') {
+                    localStorage.setItem('gmax_install_dismissed', Date.now().toString());
+                }
+            } else if (isIOS()) {
+                if (iosSteps) iosSteps.classList.add('show');
+            }
+        }
+
+        // Register Dynamic Service Worker
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                self.addEventListener('install', (e) => self.skipWaiting());
+                self.addEventListener('activate', (e) => self.clients.claim());
+                self.addEventListener('fetch', (e) => {
+                    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
+                });
+            `;
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+
+            navigator.serviceWorker.register(swUrl)
+                .then(() => console.log('Service Worker Registered'))
+                .catch((err) => console.log('SW Error:', err));
+        }
+
+        // Listen for BeforeInstallPrompt (Chrome/Edge/Android)
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (pwaInstallBtn) pwaInstallBtn.style.display = 'flex';
+            setTimeout(function() {
+                const tgModal = document.getElementById('tgPopupModal');
+                if (!tgModal || tgModal.style.display === 'none') {
+                    showInstallPopup();
+                }
+            }, 800);
+        });
+
+        // Header Install button
+        if (pwaInstallBtn) {
+            pwaInstallBtn.addEventListener('click', function() { triggerInstall(); });
+        }
+
+        // Hide UI if already installed
+        window.addEventListener('appinstalled', function() {
+            if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
+            closeInstallPopup();
+            console.log('App successfully installed!');
+        });
+
+        // Page load check
+        if (isStandalone()) {
+            if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
         }
     </script>
 </body>
